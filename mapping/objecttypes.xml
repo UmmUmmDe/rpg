@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objecttypes>
+ <objecttype name="Collision" color="#ff0000">
+  <property name="type" type="string" default="normal"/>
+ </objecttype>
+ <objecttype name="Event" color="#ffff00">
+  <property name="funcInit" type="string" default="init"/>
+  <property name="funcInteract" type="string" default="interact"/>
+  <property name="funcTouch" type="string" default="touch"/>
+  <property name="funcUpdate" type="string" default="update"/>
+  <property name="script" type="string"/>
+  <property name="solid" type="bool"/>
+  <property name="sprite" type="string"/>
+ </objecttype>
+ <objecttype name="Warp" color="#aa00ff">
+  <property name="map" type="string"/>
+  <property name="target" type="string"/>
+  <property name="x" type="int"/>
+  <property name="y" type="int"/>
+ </objecttype>
+</objecttypes>
