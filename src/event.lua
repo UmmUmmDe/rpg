@@ -1,3 +1,5 @@
+require("src.mapdefaults")
+
 Event = class("Event", {
 	x = 0,
 	y = 0,
@@ -16,10 +18,8 @@ Event = class("Event", {
 })
 
 function Event:init(obj, map)
-	self.x, self.y = math.floor(tonumber(obj["@x"]) / TILE), math.floor(tonumber(obj["@y"]) / TILE)
-	if obj.properties then
-		self.props = Helper.loadProperties(obj.properties)
-	end
+	self.x, self.y = math.floor(tonumber(obj.x) / TILE), math.floor(tonumber(obj.y) / TILE)
+	self.props = obj.properties
 	local def = MapDefaults.Event
 	self.sprite = self.props.sprite or def.sprite
 	self.script = self.props.script or def.script
@@ -28,6 +28,14 @@ function Event:init(obj, map)
 	self.funcInteract = self.props.funcInteract or def.funcInteract
 	self.funcTouch = self.props.funcTouch or def.funcTouch
 	self.solid = self.props.solid or def.solid
+end
+
+function Event:getDraw()
+	local x, y = 0, 0
+	if self.tween then
+		x, y = (self.tween.tx - self.tween.x) - self.tween.dx, (self.tween.ty - self.tween.y) - self.tween.dy
+	end
+	return self.x * TILE - x, self.y * TILE - y
 end
 
 function Event:draw()

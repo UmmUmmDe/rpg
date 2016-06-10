@@ -3,6 +3,8 @@ _INFO = {
 	_AUTHOR = "UmmUmmDe"
 }
 
+TILE = 32
+
 la = love.audio
 le = love.event
 lf = love.filesystem
@@ -42,7 +44,8 @@ end
 Keys = obj
 obj = nil
 
-require("src.tiled")
+sti = require("src.sti")
+require("src.map")
 require("src.loader")
 require("src.player")
 require("src.dialog")
@@ -52,6 +55,7 @@ function love.load(args)
 	map = Map("test")
 	player = Player()
 	res:startLoading()
+	debug = true
 end
 
 function love.update(dt)
@@ -71,8 +75,12 @@ function love.update(dt)
 		end
 		v.pressed = down
 	end
-	if Queue.update(dt) then
-		--do nothing
+	if isDown("menu") then
+		le.quit() --Temporary
+	elseif isDown("debug") and just("debug") then
+		debug = not debug
+	end
+	if Queue.update(dt) then --do nothing
 	elseif state == States.LOADING then
 		res:loadUpdate(dt)
 	elseif state == States.OVERWORLD then
@@ -89,15 +97,13 @@ function love.draw()
 	if state == States.LOADING then
 		res:loadDraw()
 	elseif state == States.OVERWORLD then
+		lg.push()
+		local px, py = player:getDraw()
+		lg.translate(-px + (lg.getWidth() - TILE) / 2, -py + (lg.getHeight() - TILE) / 2)
 		map:draw()
+		lg.pop()
 	end
 	Queue.draw()
-end
-
-function love.keypressed(key)
-	if key == "escape" then
-		le.quit()
-	end
 end
 
 function isDown(code)

@@ -37,7 +37,7 @@ function DialogChoice:update(dt)
 	if isDown("up") and just("up") then
 		self.selected = self.selected - 1
 		if self.selected < 1 then
-			self.selected = #choices
+			self.selected = #self.choices
 		end
 	elseif isDown("down") and just("down") then
 		self.selected = self.selected + 1

@@ -5,5 +5,6 @@ return {
 	right = {"d", "right"},
 	interact = {"return", "space"},
 	menu = {"escape"},
-	run = {"lshift", "rshift"}
+	run = {"lshift", "rshift"},
+	debug = {"f3"}
 }

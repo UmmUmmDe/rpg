@@ -1,3 +1,4 @@
+XML = require("src.xml")
 local xml = XML.newParser()
 
 MapDefaults = {}

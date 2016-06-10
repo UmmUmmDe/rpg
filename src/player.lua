@@ -26,6 +26,7 @@ function Player:draw()
 		end
 	end
 	x, y = math.floor(x), math.floor(y)
+	x, y = 0, 0
 	if self.sprite then
 		lg.draw(res.res[self.sprite], self.quad, x, y)
 	else
