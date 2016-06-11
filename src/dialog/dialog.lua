@@ -59,6 +59,7 @@ function Dialog:interact()
 	if self.display ~= self.text then
 		self.display = self.text
 		self.obj = rich:new({self.display, lg.getWidth() - 10, macros})
+	else
+		self.super.interact(self)
 	end
-	self.super.interact(self)
 end
