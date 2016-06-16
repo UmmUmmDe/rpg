@@ -97,7 +97,7 @@ function Event:move(x, y, map)
 		lastDir = x ~= 0
 		local w, h = TILE * math.abs(y) / 2, TILE * math.abs(x) / 2
 		local x1, y1 = (TILE - w) / 2 - x, (TILE - h) / 2 - y
-		if not map:isSolid(self.x + x, self.y + y, x1, y1, w, h) then
+		if not map:isSolid(self.x + x, self.y + y, x1, y1, w, h, self) then
 			self.tween = Tween(self.x * TILE, self.y * TILE, self.x * TILE + x * TILE, self.y * TILE + y * TILE, self.speed)
 			self.x = self.x + x
 			self.y = self.y + y

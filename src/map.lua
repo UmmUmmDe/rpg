@@ -35,7 +35,7 @@ function Map:draw()
 	local px, py = player:getDraw()
 	self.map:setDrawRange(-px, -py, lg.getDimensions())
 	for i, v in ipairs(self.map.layers) do
-		if not v.objects or (v.objects and debug) then
+		if not v.objects then
 			self.map:drawLayer(v)
 		end
 		local props = self.map:getLayerProperties(i)
@@ -48,6 +48,18 @@ function Map:draw()
 			end
 		end
 	end
+	if debug then
+		for _, v in pairs(self.collisions) do
+			if v.type == "normal" then
+				lg.setColor(255, 0, 0, 128)
+			elseif v.type == "water" then
+				lg.setColor(0, 128, 255, 128)
+			elseif v.type == "gap" then
+				lg.setColor(128, 128, 128, 128)
+			end
+			lg.rectangle("fill", v.x, v.y, v.w, v.h)
+		end
+	end
 end
 
 function Map:update(dt)
@@ -57,13 +69,15 @@ function Map:update(dt)
 	end
 end
 
-function Map:isSolid(x, y, x1, y1, w, h)
+function Map:isSolid(x, y, x1, y1, w, h, other)
 	x, y = x * TILE, y * TILE
 	x1, y1, w, h = x1 or 0, y1 or 0, w or TILE, h or TILE
 	x1, y1 = x1 + x, y1 + y
 	for _, v in pairs(self.collisions) do
-		if Helper.collision(x1, y1, w, h, v.x, v.y, v.w, v.h) then
-			return true
+		if not other or (other and ((v.type == "water" and not other.flying and not other.swimming) or (v.type == "gap" and not other.flying))) then
+			if Helper.collision(x1, y1, w, h, v.x, v.y, v.w, v.h) then
+				return true
+			end
 		end
 	end
 	x, y = x / TILE, y / TILE

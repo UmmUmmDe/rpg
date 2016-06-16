@@ -39,8 +39,8 @@ function Tween.update(dt)
 		end
 		v.dx = v.dx + x
 		v.dy = v.dy + y
-		--print(v.dx, v.dy)
 		if math.abs(v.x - v.tx) - math.abs(v.dx) <= 0 and math.abs(v.y - v.ty) - math.abs(v.dy) <= 0 then
+			v.dx, v.dy = v.tx - v.x, v.ty - v.y
 			table.remove(tweens, Helper.find(tweens, v))
 			v.done = true
 		end

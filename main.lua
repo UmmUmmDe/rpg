@@ -23,6 +23,15 @@ ltc = love.touch
 lv = love.video
 lw = love.window
 
+local oldprint = print
+function print(...)
+	local tbl = {}
+	for i, v in ipairs({...}) do
+		table.insert(tbl, inspect(v))
+	end
+	oldprint(unpack(tbl))
+end
+
 if lf.exists("scripts/override.lua") then
 	require("scripts.override")
 	override = true
@@ -55,7 +64,11 @@ function love.load(args)
 	map = Map("test")
 	player = Player()
 	res:startLoading()
+	scale = 1
 	debug = true
+	debugThread = lt.newThread("src/debug/thread.lua")
+	debugThread:start()
+	debugChannel = lt.getChannel("debug")
 end
 
 function love.update(dt)
@@ -86,7 +99,25 @@ function love.update(dt)
 	elseif state == States.OVERWORLD then
 		map:update(dt)
 	end
+	if scaleTween then
+		scale = scaleTween.x + scaleTween.dx
+		if scaleTween.done then
+			scaleTween = nil
+		end
+	end
 	Tween.update(dt)
+
+	--Run debug input:
+	if debug then
+		local str = debugChannel:pop() --Allows stacking up commands by disabling debug mode for a while.
+		if str then
+			local loaded = loadstring(str)
+			local success, err = pcall(loaded)
+			if not success then
+				print(err)
+			end
+		end
+	end
 end
 
 function love.draw()
@@ -98,8 +129,9 @@ function love.draw()
 		res:loadDraw()
 	elseif state == States.OVERWORLD then
 		lg.push()
+		lg.scale(scale, scale)
 		local px, py = player:getDraw()
-		lg.translate(-px + (lg.getWidth() - TILE) / 2, -py + (lg.getHeight() - TILE) / 2)
+		lg.translate(-px + (lg.getWidth() / scale - TILE) / 2, -py + (lg.getHeight() / scale - TILE) / 2)
 		map:draw()
 		lg.pop()
 	end
